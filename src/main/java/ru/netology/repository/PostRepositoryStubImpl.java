@@ -30,15 +30,31 @@ public class PostRepositoryStubImpl implements PostRepository {
     public Post save(Post post) throws Exception {
 
         long postID = post.getId();
-        if (postID == 0) {
+
+        //long postIndexMax = Collections.max(postRepo.keySet());
+
+        //     if (postID == 0) {
+        //          long newPostId = idCounter.getAndIncrement();
+        //          post.setId(newPostId);
+        //          postRepo.put(newPostId, post);
+        //      } else {
+        //          if (postRepo.containsKey(postID)) {
+        //              throw new Exception("Error write!!! Such ID already occupied");
+        //          }
+
+        if (postID == 0 && postRepo.size() == 0) {
             long newPostId = idCounter.getAndIncrement();
             post.setId(newPostId);
             postRepo.put(newPostId, post);
+        } else if (postRepo.containsKey(postID) || postID == 0) {
+            long newPostID = idCounter.getAndIncrement();
+            post.setId(newPostID);
+            postRepo.put(newPostID, post);
         } else {
-            if (postRepo.containsKey(postID)) {
-                throw new Exception("Error write!!! Such ID already occupied");
-            }
-            postRepo.put(postID, post);
+            //Привязываемся к idCounter,исключаем ситуацию удаления поста по id и потом заведение поста с таким же id (переписывание поста)
+            long newPostId = idCounter.getAndIncrement();
+            post.setId(newPostId);
+            postRepo.put(newPostId, post);
         }
         return post;
     }
